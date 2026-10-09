@@ -1,4 +1,4 @@
 {
-    "python.defaultInterpreterPath": "${~/Python_Projects/Dual_Camera}/.venv/bin/python",
+    "python.defaultInterpreterPath": "/home/pi5/Python_Projects/Dual_Camera/venv/bin/python",
     "python.terminal.activateEnvironment": true
 }
