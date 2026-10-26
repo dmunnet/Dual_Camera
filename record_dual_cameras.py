@@ -1,6 +1,6 @@
+import os
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
-import os
 from pathlib import Path
 from threading import Event
 from time import monotonic, sleep
@@ -8,7 +8,6 @@ from time import monotonic, sleep
 from picamera2 import Picamera2
 from picamera2.encoders import H264Encoder
 from picamera2.outputs import FfmpegOutput
-
 
 DURATION_SECONDS = 30
 RESOLUTION = (1920, 1080)
@@ -18,7 +17,9 @@ STREAM_PORT = 5000
 OUTPUT_DIR = Path(__file__).resolve().parent / "recordings"
 
 
-def start_recording(camera, encoder, output, start_gate, stream_encoder=None, stream_output=None):
+def start_recording(
+    camera, encoder, output, start_gate, stream_encoder=None, stream_output=None
+):
     start_gate.wait()
     if stream_encoder is not None:
         camera.start_encoder(stream_encoder, stream_output, name="lores")
@@ -47,10 +48,12 @@ def main():
             if camera_number == 0:
                 configuration = camera.create_video_configuration(
                     main={"size": RESOLUTION},
-                    lores={"size": LOW_RESOLUTION, "format": "YUV420"}
-                )   
+                    lores={"size": LOW_RESOLUTION, "format": "YUV420"},
+                )
             else:
-                configuration = camera.create_video_configuration(main={"size": RESOLUTION})
+                configuration = camera.create_video_configuration(
+                    main={"size": RESOLUTION}
+                )
 
             camera.configure(configuration)
             cameras.append(camera)
@@ -62,9 +65,7 @@ def main():
         ]
         stream_encoders = [H264Encoder(bitrate=1_500_000), None]
         stream_outputs = [
-            FfmpegOutput(
-                f"-f mpegts udp://{STREAM_HOST}:{STREAM_PORT}?pkt_size=1316"
-            ),
+            FfmpegOutput(f"-f mpegts udp://{STREAM_HOST}:{STREAM_PORT}?pkt_size=1316"),
             None,
         ]
 
@@ -91,7 +92,9 @@ def main():
             while (remaining := deadline - monotonic()) > 0:
                 sleep(remaining)
 
-            stop_futures = [executor.submit(camera.stop_recording) for camera in cameras]
+            stop_futures = [
+                executor.submit(camera.stop_recording) for camera in cameras
+            ]
             for future in stop_futures:
                 future.result()
 
