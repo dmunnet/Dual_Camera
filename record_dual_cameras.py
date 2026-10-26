@@ -8,7 +8,6 @@ from time import monotonic, sleep
 from picamera2 import Picamera2
 from picamera2.encoders import H264Encoder
 from picamera2.outputs import FfmpegOutput
-from libcamera import Transform # pyright: ignore[reportAttributeAccessIssue]
 
 
 DURATION_SECONDS = 30
@@ -48,10 +47,10 @@ def main():
             if camera_number == 0:
                 configuration = camera.create_video_configuration(
                     main={"size": RESOLUTION},
-                    lores={"size": LOW_RESOLUTION, "format": "YUV420"}, transform=Transform(vflip=True, hflip=True)
+                    lores={"size": LOW_RESOLUTION, "format": "YUV420"}
                 )   
             else:
-                configuration = camera.create_video_configuration(main={"size": RESOLUTION}, transform=Transform(vflip=True, hflip=True))
+                configuration = camera.create_video_configuration(main={"size": RESOLUTION})
 
             camera.configure(configuration)
             cameras.append(camera)
